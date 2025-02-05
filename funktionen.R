@@ -53,8 +53,8 @@ ressource_monatlich_diagramm <- function(gefilterte_daten, y_var) {
 top_ten_tabelle <- function(gefilterte_daten, y_var) {
   
   tabelle <- gefilterte_daten |>
-    select(top_10, datensatz_titel, .data[[y_var]]) |>
-    arrange(desc(.data[[y_var]])) |>
+    select(top_10, datensatz_titel, all_of(y_var)) |>
+    arrange(desc(all_of(y_var))) |>
     gt(id = "top10tabelle") |>
     cols_label(
       top_10 = "",
@@ -84,7 +84,7 @@ top_ten_tabelle <- function(gefilterte_daten, y_var) {
       align = "left"
     ) |>
     fmt_number(
-      columns = .data[[y_var]],
+      columns = all_of(y_var),
       sep_mark = "'",
       decimals = 0
     ) |>
