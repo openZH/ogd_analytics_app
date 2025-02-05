@@ -1,0 +1,15 @@
+
+
+@font-face {
+  font-family: "InterRegular";
+  font-display: swap;
+  src: url("Inter-Regular.woff2") format("woff2"),
+       url("Inter-Regular.ttf") format("truetype"); 
+}
+
+@font-face {
+  font-family: "InterBlack";
+  font-display: swap;
+  src: url("Inter-Black.woff2") format("woff2"),
+       url("Inter-Black.ttf") format("truetype"); 
+}

@@ -1,0 +1,312 @@
+/* =================================== VARIABLEN =================================== */
+:root {
+  /* Farben */
+  --akzent-blau: #0070B4;
+  --akzent-hellblau: #7AB6E2;
+  --akzent-dunkelblau: #00407C;
+  --soft-blau: #EDF5FA;
+  --tuerkis: #00797B;
+  --gruen: #1A7F1F;
+  --background-light: #F0F0F0;
+  --text-white: #FFFFFF;
+  --text-black: #000000;
+  
+ /* Schriftarten */
+  --font-regular: 'InterRegular', sans-serif;
+  --font-black: 'InterBlack', sans-serif;
+}
+
+/* =================================== GLOBAL STYLES =================================== */
+* { 
+  font-feature-settings: 'ss07','ss08','cv03','cv04','cv10';
+}
+
+body {
+  font-family: var(--font-regular); 
+  font-synthesis-weight: none;
+}
+
+.main-header, 
+.box-title,
+.main-header .logo { 
+  font-family: var(--font-black); 
+}
+
+.main-sidebar .sidebar-menu a {
+  color: #000000;  
+  font-family: var(--font-regular);
+}
+
+/* Standardstil für Sidebar-Menü */
+.sidebar .sidebar-menu li a {
+  font-family: var(--font-regular); 
+  background-color: transparent; 
+}
+
+/* Stil beim Hover */
+.sidebar .sidebar-menu li a:hover {
+  color: var(--akzent-blau); 
+  font-family: var(--font-black); 
+  background-color: transparent; 
+  cursor: pointer; 
+}
+
+/* Stil für den aktiven Menüeintrag */
+.sidebar .sidebar-menu li.active a {
+  font-family: var(--font-black); 
+  color: var(--akzent-blau); 
+}
+
+/* =================================== BOX STYLES =================================== */
+.box.box-solid.box-success>.box-header {
+  color: var(--text-white);
+  background: var(--akzent-hellblau);
+}
+
+.box.box-solid.box-success {
+  border-bottom-color: var(--akzent-hellblau);
+  border-left-color: var(--akzent-hellblau);
+  border-right-color: var(--akzent-hellblau);
+  border-top-color: var(--akzent-hellblau);
+}
+
+.box.box-solid.box-danger>.box-header {
+  color: var(--text-white);
+  background: var(--akzent-blau);
+}
+
+.box.box-solid.box-danger {
+  border-bottom-color: var(--akzent-blau);
+  border-left-color: var(--akzent-blau);
+  border-right-color: var(--akzent-blau);
+  border-top-color: var(--akzent-blau);
+}
+
+.box.box-solid.box-warning>.box-header {
+  color: var(--text-white);
+  background: var(--akzent-dunkelblau);
+}
+
+.box.box-solid.box-warning {
+  border-bottom-color: var(--akzent-dunkelblau);
+  border-left-color: var(--akzent-dunkelblau);
+  border-right-color: var(--akzent-dunkelblau);
+  border-top-color: var(--akzent-dunkelblau);
+}
+
+/* =================================== LANDINGPAGE STYLES =================================== */
+.custom-box {
+  background-color: var(--background-light) !important; 
+  border: none !important;              
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0) !important; 
+  padding: 5px !important;              
+  margin: 0 !important;                 
+  width: 100% !important;  
+  margin-bottom: -10px !important;
+}
+
+.box.box-solid {
+  box-shadow: none !important;   
+  padding: 0;
+}
+
+.box {
+  border-top: none !important;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.custom-help-text {
+  font-size: 12px; 
+}
+
+.info-box-number {
+  font-family: var(--font-black); 
+}
+
+.info-box-text {
+  font-family: var(--font-regular); 
+}
+
+.bslib-value-box {
+  border-radius: 3px; 
+  box-shadow:  0px 1px 1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.bslib-value-box .value-box-title {
+  font-family: var(--font-regular);
+}
+
+.bslib-value-box .value-box-value {
+  font-family: var(--font-black);
+  font-size: 26px; 
+}
+
+/* =================================== INTERACTIVE STYLES =================================== */
+.irs--shiny .irs-bar {
+  border-top: 1px solid var(--akzent-blau) !important;
+  border-bottom: 1px solid var(--akzent-blau) !important;
+  background: var(--akzent-blau) !important;
+}
+
+.irs--shiny .irs-from, .irs--shiny .irs-to, .irs--shiny .irs-single {
+  background-color: var(--akzent-blau) !important;
+  font-family: var(--font-black);
+  font-size: 10px;
+}
+
+.irs--shiny .irs-from, .irs--shiny .irs-from, .irs--shiny .irs-single {
+  background-color: var(--akzent-blau) !important;
+  font-family: var(--font-black);
+}
+
+.selectize-input {
+  font-family: var(--font-black) !important; 
+  color: var(--akzent-blau); 
+}
+
+.selectize-input.focus {
+  border-color: #ccc; 
+  outline: 0; 
+  -webkit-box-shadow: none; 
+  box-shadow: none; 
+}
+
+.selectize-dropdown-content .option.selected {
+  background-color: var(--akzent-blau); 
+  color: var(--text-white); 
+  font-family: var(--font-black);
+}
+
+.selectize-dropdown-content .option:hover {
+  background-color: var(--soft-blau); 
+  color: var(--akzent-blau); 
+  font-family: var(--font-black);
+}
+
+.irs--shiny .irs-shadow {
+  top: 38px;
+  height: 2px;
+  background: var(--akzent-hellblau) !important;
+  border-radius: 5px;
+}
+
+.irs-grid-text {
+  font-family: var(--font-regular);
+}
+
+.irs-grid-pol {
+  display: none;
+}
+
+/* =================================== TABLE STYLES =================================== */
+table.dataTable tbody tr:hover {
+  background-color: var(--soft-blau) !important;
+  color: var(--akzent-blau) !important;
+  font-family: var(--font-black);
+}
+
+table.dataTable tbody tr.selected>* {
+  box-shadow: inset 0 0 0 9999px var(--akzent-blau) !important;
+  background-color: var(--akzent-blau) !important;
+  font-family: var(--font-black);
+}
+
+/* =================================== CALENDAR STYLES =================================== */
+input.sw-air-picker {
+  font-family: var(--font-black);
+  color: var(--akzent-blau); 
+}
+
+input.sw-air-picker:focus {
+  border-color: #ccc; 
+  outline: none; 
+}
+
+.air-datepicker-cell.-month-.-selected-,
+.air-datepicker-cell.-month-.-hover- {
+  background-color: var(--soft-blau); 
+  color: var(--akzent-blau); 
+  font-family: var(--font-black);
+}
+
+.air-datepicker-cell.-range-from-,
+.air-datepicker-cell.-range-to-,
+.air-datepicker-cell.-in-range- {
+  background-color: var(--soft-blau); 
+  color: #595959; 
+}
+
+.air-datepicker-cell:hover {
+  border: 1px solid var(--akzent-blau); 
+  font-family: var(--font-black);
+  color: var(--akzent-blau); 
+}
+
+/* =================================== LANDING PAGE STYLES =================================== */
+h4 {
+  font-family: var(--font-black);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+strong {
+  font-family: var(--font-black);
+  color: var(--akzent-blau); 
+}
+
+.custom-strong {
+  font-family: var(--font-black);
+  color: var(--akzent-blau);
+}
+
+.action-button {
+  font-family: var(--font-black);
+}
+
+.custom-box-title {
+  font-size: 26px; 
+  color: var(--text-black); 
+}
+
+.custom-padding-box {
+  padding-top: 10px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-bottom: 20px !important;  
+  margin-bottom: -10px !important;
+}
+
+.bullet-point {
+  list-style-type: circle;
+  margin-left: 20px;
+}
+
+/* =================================== BORDER STYLES =================================== */
+.box-12-monate {
+  border-style: solid;
+  border-color: var(--akzent-blau);
+  border-width: 1px;
+}
+
+.box-letzter-monat {
+  border-style: solid;
+  border-color: var(--tuerkis);
+  border-width: 1px;
+}
+
+.box-gestern {
+  border-style: solid;
+  border-color: var(--gruen);
+  border-width: 1px; 
+}
+
+/* =================================== FOOTER STYLES =================================== */
+.custom-footer {
+  background-color: var(--akzent-blau);
+  color: var(--text-white);
+  text-align: center;
+  padding: 10px;
+  font-family: var(--font-regular);
+  z-index: 9999;
+}
