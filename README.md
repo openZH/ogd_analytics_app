@@ -69,4 +69,4 @@ Diese App wurde von Loris Kaufmann (Praktikant Data Science & Analysen) entwicke
 - **Autor:** Loris Kaufmann
 - **Zugehörigkeit:** Statistisches Amt Kanton Zürich
 - **GitHub:** [https://github.com/LoKauf](https://github.com/LoKauf)
-# ogd_analytics_app
+
