@@ -2,8 +2,9 @@
 pacman::p_load(tidyverse, gt, DT, bslib, shiny, shinydashboard, fresh, shinyWidgets, ggsci, showtext, scales, plotly, htmltools)
 
 # Daten laden
-ogd_analytics_ressource <- readr::read_delim("https://www.web.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005043.csv")
-ogd_analytics_ds <- readr::read_delim("https://www.web.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005024.csv")
+ogd_analytics_ressource <- readr::read_delim("https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005043.csv")
+ogd_analytics_ds <- readr::read_delim("https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005024.csv")
+
 
 ogd_analytics <- ogd_analytics_ressource |> select(-c("anzahl_besuchende", "anzahl_klicks")) |> 
   left_join(ogd_analytics_ds, by = c("datensatz_id", "datensatz_titel", "publisher", "datum"))
