@@ -231,7 +231,7 @@ server <- function(input, output, session) {
     
     ogd_analytics_monatlich |> 
       dplyr::filter(
-        datensatz_titel != "Alle Datensätze",
+        datensatz_titel != "Alle Datensätze aggregiert",
         publisher == input$selected_publisher,
         as.Date(paste(jahr_num, monat_num, "01", sep = "-")) >= start_date,
         as.Date(paste(jahr_num, monat_num, "01", sep = "-")) <= end_date
