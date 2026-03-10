@@ -1,88 +1,151 @@
 # Pakete laden
-pacman::p_load(tidyverse, gt, DT, bslib, shiny, shinydashboard, fresh, shinyWidgets, ggsci, showtext, scales, plotly, htmltools)
+pacman::p_load(
+  tidyverse, gt, DT, bslib, shiny, shinydashboard, fresh,
+  shinyWidgets, ggsci, showtext, scales, plotly, htmltools, lubridate
+)
 
 # Daten laden
-ogd_analytics_ressource <- readr::read_delim("https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005043.csv")
-ogd_analytics_ds <- readr::read_delim("https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005024.csv")
+ogd_analytics_ressource <- readr::read_delim(
+  "https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005043.csv",
+  show_col_types = FALSE
+)
 
+ogd_analytics_ds <- readr::read_delim(
+  "https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005024.csv",
+  show_col_types = FALSE
+)
 
-ogd_analytics <- ogd_analytics_ressource |> select(-c("anzahl_besuchende", "anzahl_klicks")) |> 
-  left_join(ogd_analytics_ds, by = c("datensatz_id", "datensatz_titel", "publisher", "datum"))
-
-# Daten manipulieren: Datumsformat und Ausreisser (mehr als 10k downloads pro Tag) entfernen, sowie den Datensatz welchen die App anzieht
-ogd_analytics <- ogd_analytics |>
-  mutate(
-    anzahl_besuchende = replace_na(anzahl_besuchende, 0),
-    anzahl_downloads = replace_na(anzahl_downloads, 0),
-    datum = as.Date(datum, format = "%Y-%m-%d"),                       
-  ) |>
-  dplyr::filter(anzahl_downloads <= 10000,
-                datensatz_titel != "Web Analytics des Datenkatalogs des Kantons Zürich")  
-
-
-### Daten manipulieren ###
-
-# Publisher Abkürzungen (kann allenfalls noch erweitert werden)
+# Publisher-Abkürzungen
 abk_publisher <- c("Awi", "Afm", "Aln", "Are", "Awel", "Ekz", "Ima", "Ogd")
 
-# Bindestriche entfernen, erster Buchstabe kapital und Abkürzungen komplett kapital formatieren
-ogd_analytics <- ogd_analytics |> 
-  mutate(publisher = str_to_title(str_replace_all(publisher, "-", " "))) |>
-  mutate(publisher = reduce(abk_publisher, 
-                            .init = publisher, 
-                            ~ str_replace_all(.x, fixed(.y), toupper(.y)))) |> 
-  dplyr::arrange(desc(anzahl_downloads))
+# Hilfsfunktion für Publisher-Namen
+clean_publisher <- function(x, abbreviations = abk_publisher) {
+  out <- x |>
+    stringr::str_replace_all("-", " ") |>
+    stringr::str_to_title()
+  
+  for (abk in abbreviations) {
+    out <- stringr::str_replace_all(
+      string = out,
+      pattern = stringr::fixed(abk),
+      replacement = toupper(abk)
+    )
+  }
+  
+  out
+}
 
-
-# Aggregation für "Alle Datensätze" - für ID und Publisher 000 eingesetzt
-alle_dist <- ogd_analytics |> 
-  group_by(datum) |> 
-  summarise(
-    anzahl_downloads = sum(anzahl_downloads),
-    anzahl_besuchende = sum(anzahl_besuchende),
-    datensatz_id = 000,  
-    datensatz_titel = "Alle Datensätze aggregiert",
-    publisher = "000"
+# -----------------------------
+# Downloads pro Datensatz und Tag
+# Quelle: Ressourcentabelle
+# -----------------------------
+downloads_tag <- ogd_analytics_ressource |>
+  dplyr::mutate(
+    datum = as.Date(datum, format = "%Y-%m-%d"),
+    anzahl_downloads = tidyr::replace_na(anzahl_downloads, 0)
+  ) |>
+  dplyr::filter(
+    anzahl_downloads <= 10000,
+    datensatz_titel != "Web Analytics des Datenkatalogs des Kantons Zürich"
+  ) |>
+  dplyr::group_by(datum, datensatz_id, datensatz_titel, publisher) |>
+  dplyr::summarise(
+    anzahl_downloads = sum(anzahl_downloads, na.rm = TRUE),
+    .groups = "drop"
   )
 
-# in original Datensatz einbinden
-ogd_analytics <- bind_rows(
+# -----------------------------
+# Tatsächliche Datensatz-Besuche pro Datensatz und Tag
+# Quelle: Datensatztabelle
+# -----------------------------
+besuchende_tag <- ogd_analytics_ds |>
+  dplyr::mutate(
+    datum = as.Date(datum, format = "%Y-%m-%d"),
+    anzahl_besuchende = tidyr::replace_na(anzahl_besuchende, 0)
+  ) |>
+  dplyr::filter(
+    datensatz_titel != "Web Analytics des Datenkatalogs des Kantons Zürich"
+  ) |>
+  dplyr::group_by(datum, datensatz_id, datensatz_titel, publisher) |>
+  dplyr::summarise(
+    anzahl_besuchende = sum(anzahl_besuchende, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# -----------------------------
+# Gemeinsame Tagesbasis auf Datensatz-Ebene
+# -----------------------------
+ogd_analytics <- downloads_tag |>
+  dplyr::full_join(
+    besuchende_tag,
+    by = c("datum", "datensatz_id", "datensatz_titel", "publisher")
+  ) |>
+  dplyr::mutate(
+    anzahl_downloads = tidyr::replace_na(anzahl_downloads, 0),
+    anzahl_besuchende = tidyr::replace_na(anzahl_besuchende, 0),
+    publisher = clean_publisher(publisher)
+  ) |>
+  dplyr::arrange(dplyr::desc(anzahl_downloads))
+
+# -----------------------------
+# Aggregation "Alle Datensätze"
+# -----------------------------
+alle_dist <- ogd_analytics |>
+  dplyr::group_by(datum) |>
+  dplyr::summarise(
+    anzahl_downloads = sum(anzahl_downloads, na.rm = TRUE),
+    anzahl_besuchende = sum(anzahl_besuchende, na.rm = TRUE),
+    datensatz_id = 0,
+    datensatz_titel = "Alle Datensätze aggregiert",
+    publisher = "000",
+    .groups = "drop"
+  )
+
+ogd_analytics <- dplyr::bind_rows(
   ogd_analytics,
   alle_dist
 )
 
-# Monatliche Downloads
-ogd_analytics_monatlich <- ogd_analytics |> 
-  mutate(
-    monatsbeginn = floor_date(datum, "month"),
-    monat_num = month(monatsbeginn),
-    jahr_num = year(monatsbeginn)
-  ) |> 
-  group_by(jahr_num, monat_num, monatsbeginn, datensatz_id, datensatz_titel, publisher) |> 
-  summarise(downloads = sum(anzahl_downloads), 
-            besuchende = sum(anzahl_besuchende),
-            .groups = "drop") |> 
-  arrange(desc(downloads))
+# -----------------------------
+# Monatliche Aggregation
+# -----------------------------
+ogd_analytics_monatlich <- ogd_analytics |>
+  dplyr::mutate(
+    monatsbeginn = lubridate::floor_date(datum, unit = "month"),
+    monat_num = lubridate::month(monatsbeginn),
+    jahr_num = lubridate::year(monatsbeginn)
+  ) |>
+  dplyr::group_by(
+    jahr_num, monat_num, monatsbeginn,
+    datensatz_id, datensatz_titel, publisher
+  ) |>
+  dplyr::summarise(
+    downloads = sum(anzahl_downloads, na.rm = TRUE),
+    besuchende = sum(anzahl_besuchende, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(dplyr::desc(downloads))
 
-
-# Publisher nach Anzahl titel
-sorted_publishers <- ogd_analytics_monatlich |> 
-  dplyr::filter(publisher != "000") |> 
-  group_by(publisher) |> 
-  summarise(n = n(), .groups = "drop") |> 
-  arrange(desc(n)) |> 
-  pull(publisher)
-
+# Publisher nach Anzahl Titel
+sorted_publishers <- ogd_analytics_monatlich |>
+  dplyr::filter(publisher != "000") |>
+  dplyr::group_by(publisher) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  dplyr::arrange(dplyr::desc(n)) |>
+  dplyr::pull(publisher)
 
 # Verfügbare Monate
 available_months <- unique(ogd_analytics_monatlich$monatsbeginn)
 
-ogd_analytics_jahre <- ogd_analytics_monatlich |>  
-  group_by(datensatz_id, datensatz_titel, jahr_num) |> 
-  summarise(downloads_jahr = sum(downloads), 
-            besuchende_jahr = sum(besuchende),
-            .groups = "drop") |> 
-  arrange(desc(downloads_jahr)) 
+# Jahresaggregation
+ogd_analytics_jahre <- ogd_analytics_monatlich |>
+  dplyr::group_by(datensatz_id, datensatz_titel, jahr_num) |>
+  dplyr::summarise(
+    downloads_jahr = sum(downloads, na.rm = TRUE),
+    besuchende_jahr = sum(besuchende, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(dplyr::desc(downloads_jahr))
 
 # eigenes ggplot Theme 
 OGD_theme <- create_theme(
