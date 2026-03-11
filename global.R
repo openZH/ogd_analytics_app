@@ -6,15 +6,14 @@ pacman::p_load(
 
 # Daten laden
 ogd_analytics_ressource <- readr::read_delim(
-  "https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005043.csv",
+  "https://www.web.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005043.csv",
   show_col_types = FALSE
 )
 
 ogd_analytics_ds <- readr::read_delim(
-  "https://daten.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005024.csv",
+  "https://www.web.statistik.zh.ch/ogd/daten/ressourcen/KTZH_00002522_00005024.csv",
   show_col_types = FALSE
 )
-
 # Publisher-Abkürzungen
 abk_publisher <- c("Awi", "Afm", "Aln", "Are", "Awel", "Ekz", "Ima", "Ogd")
 

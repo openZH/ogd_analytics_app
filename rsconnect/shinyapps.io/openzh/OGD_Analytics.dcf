@@ -1,0 +1,12 @@
+name: OGD_Analytics
+title:
+username: openzh
+account: openzh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13758838
+bundleId: 11693175
+url: https://openzh.shinyapps.io/OGD_Analytics/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
